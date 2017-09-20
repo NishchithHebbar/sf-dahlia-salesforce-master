@@ -90,10 +90,10 @@
                         </div>
                         <div class="col-sm-6">
                             <div class="form-group">
-                                <label class="col-sm-6 control-label">Status</label>
+                                <label class="col-sm-6 control-label">Total Monthly Rent</label>
                                 <div class="col-sm-6">
                                     <p class="form-control-static">
-                                        <apex:outputField value="{!app.Status__c}" />
+                                        <apex:outputField value="{!app.Total_Monthly_Rent__c}" />
                                     </p>
                                 </div>
                             </div>
@@ -112,10 +112,10 @@
                         </div>
                         <div class="col-sm-6">
                             <div class="form-group">
-                                <label class="col-sm-6 control-label">Created By</label>
+                                <label class="col-sm-6 control-label">Status</label>
                                 <div class="col-sm-6">
                                     <p class="form-control-static">
-                                        <apex:outputField value="{!app.CreatedBy.Name}" />
+                                        <apex:outputField value="{!app.Status__c}" />
                                     </p>
                                 </div>
                             </div>
@@ -134,10 +134,10 @@
                         </div>
                         <div class="col-sm-6">
                             <div class="form-group">
-                                <label class="col-sm-6 control-label">Referral Source</label>
+                                <label class="col-sm-6 control-label">Created By</label>
                                 <div class="col-sm-6">
                                     <p class="form-control-static">
-                                        <apex:outputText value="{!app.Referral_Source__c}" />
+                                        <apex:outputField value="{!app.CreatedBy.Name}" />
                                     </p>
                                 </div>
                             </div>
@@ -150,6 +150,16 @@
                                 <div class="col-sm-6">
                                     <p class="form-control-static">
                                         <apex:outputText value="{!app.Application_Language__c}" />
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="col-sm-6 control-label">Referral Source</label>
+                                <div class="col-sm-6">
+                                    <p class="form-control-static">
+                                        <apex:outputText value="{!app.Referral_Source__c}" />
                                     </p>
                                 </div>
                             </div>
@@ -369,9 +379,166 @@
                 </div>
                 <div class="form-group">
                     <div class="col-xs-12 sectionHeader">
+                        <h5>Reserved and Priority Qualifying Information</h5>
+                    </div>
+                </div>
+                <div class="section form-group-section">
+                    <div class="row">
+                        <apex:outputPanel rendered="{!hasDevelopmentalDisabilitiesUnits}">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="col-sm-6 control-label">Reserved - Developmentally Disabled</label>
+                                <div class="col-sm-6">
+                                    <p class="form-control-static">
+                                        <apex:outputField value="{!app.Has_DevelopmentalDisability__c}" />
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        </apex:outputPanel>
+                        <apex:outputPanel rendered="{!!ISBLANK(app.Listing__r.Reserved_community_type__c)}">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="col-sm-6 control-label">Meets Community Requirements</label>
+                                <div class="col-sm-6">
+                                    <p class="form-control-static">
+                                        <apex:outputField value="{!app.Answered_Community_Screening__c}" />
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        </apex:outputPanel>
+                    </div>
+                    <div class="row">
+                        <apex:outputPanel rendered="{!hasVeteransUnits}">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="col-sm-6 control-label">Reserved - U.S. Military</label>
+                                <div class="col-sm-6">
+                                    <p class="form-control-static">
+                                        <apex:outputField value="{!app.Has_Military_Service__c}" />
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        </apex:outputPanel>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="col-sm-6 control-label">ADA Priorities Selected</label>
+                                <div class="col-sm-6">
+                                    <p class="form-control-static">
+                                        <apex:outputField value="{!app.Has_ADA_Priorities_Selected__c}" />
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        
+
+                        
+                    </div>
+                </div>
+                
+                
+                <div class="form-group">
+                    <div class="col-xs-12 sectionHeader">
                         <h5>Preferences</h5>
                     </div>
                 </div>
+                <!-- <div id="SFDT_ApplicationPreference" class="section">
+                    <table id="applicationPreferenceTable" class="table table-striped table-bordered" cellspacing="0" width="100%"></table>
+                </div> -->
+                
+                <!-- Preference table -->
+                <div class="form-group">
+					<div class="col-xs-12">
+						<div class="section">
+							<apex:outputPanel layout="none" rendered="{!appPreferences.size == 0}">
+								<p style="margin: 0;">No Preferences</p>
+							</apex:outputPanel>
+							<apex:outputPanel layout="none" rendered="{!appPreferences.size > 0}">
+								<table class="table table-bordered" id="shortFormPreferencesTable">
+									<thead>
+										<tr>
+											<th>Receives Preference</th>
+											<th>Preference Name</th>
+											<th>Pre-Lottery Validation</th>
+											<th>Person Who Claimed</th>
+											<th>Type of Proof</th>
+											<th>Lottery Rank</th>
+											<th>Opt Out</th>
+										</tr>
+									</thead>
+									<tbody>
+										<apex:repeat value="{!appPreferences}" var="appPreference">
+											<tr style="background-color: {!IF(appPreference.appPref.Receives_Preference__c,'','#F9F9F9')}">
+												<td style="text-align: center;">
+													<!-- <apex:outputField value="{!appPreference.appPref.Receives_Preference__c}" /> -->
+													<apex:outputPanel rendered="{!appPreference.prefOrder < 1000}" layout="none">
+														<span class="glyphicon glyphicon-ok-sign text-success"></span>
+													</apex:outputPanel>
+													<apex:outputPanel rendered="{!appPreference.prefOrder >= 1000 && appPreference.prefOrder < 2000}" layout="none">
+														<span class="glyphicon glyphicon-remove-sign" style="color: red;"></span>
+													</apex:outputPanel>
+													<apex:outputPanel rendered="{!appPreference.prefOrder >= 2000}" layout="none">
+														<span class="glyphicon glyphicon-remove-sign" style="color: grey;"></span>
+													</apex:outputPanel>
+												</td>
+												<td><apex:outputField value="{!appPreference.appPref.Preference_Name__c}" /></td>
+												<td><apex:outputField value="{!appPreference.appPref.Lottery_Status__c}" /></td>
+												<td><apex:outputField value="{!appPreference.appPref.Person_who_claimed_Name__c}" /></td>
+												<td>
+													<apex:outputField value="{!appPreference.appPref.Type_of_proof__c}" rendered="{!!appPreference.hasAttachment}"/>
+													<apex:outputPanel rendered="{!appPreference.hasAttachment}" layout="none">
+														<apex:repeat value="{!appPreference.appPref.Custom_Attachments__r}" var="customAtt">
+															<u><apex:outputLink value="{!URLFOR($Action.Attachment.Download, attachmentsMap[customAtt.id])}" target="_blank">{!customAtt['Name']}</apex:outputLink></u>
+															<br/>
+														</apex:repeat>
+													</apex:outputPanel>
+												</td>
+												<td><apex:outputField value="{!appPreference.appPref.Preference_Lottery_Rank__c}" /></td>
+												<td style="text-align: center;">
+													<!-- <apex:outputField value="{!appPreference.appPref.Opt_Out__c}" /> -->
+													<apex:outputPanel rendered="{!appPreference.appPref.Opt_Out__c}" layout="none">
+														<span class="glyphicon glyphicon-ok"></span>
+													</apex:outputPanel>
+												</td>
+											</tr>
+										</apex:repeat>
+									</tbody>
+								</table>
+							</apex:outputPanel>
+                            
+                            <apex:outputPanel rendered="{!app.General_Lottery__c == true}">
+                            	<div class="row">
+                            		<div class="col-sm-6">
+                                		<div class="form-group">
+                                    		<label class="col-sm-6 control-label">General Lottery</label>
+                                    		<div class="col-sm-6">
+                                        		<p class="form-control-static">
+                                            		<apex:outputField value="{!app.General_Lottery__c}"/>
+                                        		</p>
+                                    		</div>
+                                		</div>
+                            		</div>
+                            		<div class="col-sm-6">
+                                		<div class="form-group">
+                                    		<label class="col-sm-6 control-label">General Lottery Rank</label>
+                                    		<div class="col-sm-6">
+                                        		<p class="form-control-static">
+                                            		<apex:outputField value="{!app.General_Lottery_Rank__c}" />
+                                        		</p>
+                                    		</div>
+                                		</div>
+                            		</div>
+                        		</div>
+                            </apex:outputPanel>
+                            
+                            
+						</div>
+					</div>
+				</div>
+				
+                <!--
                 <div class="section form-group-section">
                     <div class="row">
                         <div class="col-sm-6">
@@ -540,157 +707,13 @@
                             </div>
                         </div>
                     </div>
-                    <!-- <div class="row">
-<div class="col-sm-6">
-<div class="form-group">
-<label class="col-sm-6 control-label">Has DTHP</label>
-<div class="col-sm-6">
-<p class="form-control-static">
-<apex:outputField value="{!app.DTHP_Preference__c}" />
-</p>
-</div>
-</div>
-</div>
-<div class="col-sm-6">
-<div class="form-group">
-<label class="col-sm-6 control-label">Who Claimed DTHP</label>
-<div class="col-sm-6">
-<p class="form-control-static">
-<apex:outputField value="{!app.DTHP_Preference_Member__r.Name__c}" />
-</p>
-</div>
-</div>
-</div>
-</div>
-<div class="row">
-<div class="col-sm-6">
-<div class="form-group">
-<label class="col-sm-6 control-label">DTHP Verification</label>
-<div class="col-sm-6">
-<p class="form-control-static">
-<apex:outputField value="{!app.DTHP_Preference_Manual__c}" />
-</p>
-</div>
-</div>
-</div>
-</div>
-<div class="row">
-<div class="col-sm-6">
-<div class="form-group">
-<label class="col-sm-6 control-label">Has COP</label>
-<div class="col-sm-6">
-<p class="form-control-static">
-<apex:outputField value="{!app.COP_Preference__c}" />
-</p>
-</div>
-</div>
-</div>
-<div class="col-sm-6">
-<div class="form-group">
-<label class="col-sm-6 control-label">Who Claimed COP</label>
-<div class="col-sm-6">
-<p class="form-control-static">
-<apex:outputField value="{!app.COP_Preference_Member__r.Name__c}" />
-</p>
-</div>
-</div>
-</div>
-</div>
-<div class="row">
-<div class="col-sm-6">
-<div class="form-group">
-<label class="col-sm-6 control-label">COP Verification</label>
-<div class="col-sm-6">
-<p class="form-control-static">
-<apex:outputField value="{!app.COP_Preference_Manual__c}" />
-</p>
-</div>
-</div>
-</div>
-</div>
-<div class="row">
-<div class="col-sm-6">
-<div class="form-group">
-<label class="col-sm-6 control-label">Has Neighborhood</label>
-<div class="col-sm-6">
-<p class="form-control-static">
-<apex:outputField value="{!app.Neighborhood_Preference__c}" />
-</p>
-</div>
-</div>
-</div>
-<div class="col-sm-6">
-<div class="form-group">
-<label class="col-sm-6 control-label">Who Claimed Neighborhood</label>
-<div class="col-sm-6">
-<p class="form-control-static">
-<apex:outputField value="{!app.Neighborhood_Preference_Member__r.Name__c}" />
-</p>
-</div>
-</div>
-</div>
-</div>
-<div class="row">
-<div class="col-sm-6">
-<div class="form-group">
-<label class="col-sm-6 control-label">Neighborhood Address Check</label>
-<div class="col-sm-6">
-<p class="form-control-static">
-<apex:outputField value="{!app.Neighborhood_Preference_Manual__c}" />
-</p>
-</div>
-</div>
-</div>
-<div class="col-sm-6">
-<div class="form-group">
-<label class="col-sm-6 control-label">Claimed Neighborhood Address</label>
-<div class="col-sm-6">
-<p class="form-control-static">
-<apex:outputField value="{!app.Neighborhood_Preference_Address__c}" />
-</p>
-</div>
-</div>
-</div>
-</div>
-<div class="row">
-<div class="col-sm-6">
-<div class="form-group">
-<label class="col-sm-6 control-label">Has Live/Work</label>
-<div class="col-sm-6">
-<p class="form-control-static">
-<apex:outputField value="{!app.Live_Work_Preference__c}" />
-</p>
-</div>
-</div>
-</div>
-<div class="col-sm-6">
-<div class="form-group">
-<label class="col-sm-6 control-label">Who Claimed Live in SF</label>
-<div class="col-sm-6">
-<p class="form-control-static">
-<apex:outputField value="{!app.Live_in_SF_Preference_Member__r.Name__c}" />
-</p>
-</div>
-</div>
-</div>
-</div>
-<div class="row">
-<div class="col-sm-6 col-sm-offset-6">
-<div class="form-group">
-<label class="col-sm-6 control-label">Who Claimed Work in SF</label>
-<div class="col-sm-6">
-<p class="form-control-static">
-<apex:outputField value="{!app.Work_in_SF_Preference_Member__r.Name__c}" />
-</p>
-</div>
-</div>
-</div>
-</div> -->
                 </div>
+                -->
+                
                 
                 <div class="form-group">
                     <div class="col-xs-12 sectionHeader">
-                        <h5>Declared Income</h5>
+                        <h5>Declared Household Income</h5>
                     </div>
                 </div>
                 <div class="section form-group-section">
@@ -737,7 +760,7 @@
                 <div id="SFDT_FlaggedApplications" class="section" style="overflow:auto;">
                     <table id="flaggedApplicationsTable" class="table table-striped table-bordered" cellspacing="0" width="100%"></table>
                 </div>
-                <div class="form-group">
+                <!-- <div class="form-group">
                     <div class="col-xs-12 sectionHeader">
                         <h5>Attachments</h5>
                     </div>
@@ -761,7 +784,7 @@
                             </apex:outputPanel>
                         </div>
                     </div>
-                </div>
+                </div> -->
             </apex:form>
         </apex:define>
         
@@ -776,10 +799,12 @@
             <apex:includeScript value="{!URLFOR($Resource.SalesforceDataTables, '/js/moment.min.js')}"/>
             <apex:includeScript value="{!URLFOR($Resource.SalesforceDataTables, '/js/jquery.datetimepicker.full.min.js')}"/>
             <apex:includeScript value="{!URLFOR($Resource.SalesforceDataTables, '/js/typeahead.bundle.min.js')}"/>
-            
+            <apex:includeScript value="{!URLFOR($Resource.SalesforceDataTables, '/js/moment-timezone.min.js')}"/>
+            <apex:includeScript value="{!URLFOR($Resource.SalesforceDataTables, '/js/moment-timezone-with-data.min.js')}"/>
             <script>
             var flaggedApplicationsTableData;
             var householdMembersTableData;
+            moment.tz.setDefault('{!myuser.TimeZoneSidKey}');
             
             function loadData(){
                 if ({!app.Id != null}) {
@@ -799,10 +824,14 @@
                                 debugger;
                                 for(var j=0;j<result.dataRows.length;j++){
                                     if ( result.dataRows[j].hasOwnProperty(result.dataColumns[i].data) ) {
-                                        if(result.dataColumns[i].type==='date'){
+                                         if(result.dataColumns[i].type==='date'){
+                                            var dateNumVal=new Date(result.dataRows[j][result.dataColumns[i].data]);
+                                            result.dataRows[j][result.dataColumns[i].data]=moment.utc(dateNumVal).format('M/D/YYYY');
+                                        }
+                                         if(result.dataColumns[i].type==='datetime'){
                                             var dateNumVal=new Date(result.dataRows[j][result.dataColumns[i].data]);
                                             result.dataRows[j][result.dataColumns[i].data]=moment(dateNumVal).format('M/D/YYYY');
-                                        }   
+                                        }      
                                     }else{
                                         result.dataRows[j][result.dataColumns[i].data]='';
                                     }
@@ -839,6 +868,57 @@
                     );
                     Visualforce.remoting.Manager.invokeAction(
                         '{!$RemoteAction.HOP_ApplicationViewController.getRecords}', 
+                        "Application_Preference__c",
+                        "Id, Preference_Name__c, Person_who_claimed_Name__c, Type_of_proof__c, Opt_Out__c, Lottery_Status__c, Preference_Lottery_Rank__c",
+                        "Application__c = '{!app.Id}'",
+                        function(result, event){
+                            debugger;
+                            //if (!remotingErrorHandler(event)) return;
+                            
+                            for(var i=0;i<result.dataColumns.length;i++){
+                                debugger;
+                                for(var j=0;j<result.dataRows.length;j++){
+                                    if ( result.dataRows[j].hasOwnProperty(result.dataColumns[i].data) ) {
+                                        if(result.dataColumns[i].type==='date'){
+                                            var dateNumVal=new Date(result.dataRows[j][result.dataColumns[i].data]);
+                                            result.dataRows[j][result.dataColumns[i].data]=moment(dateNumVal).format('M/D/YYYY');
+                                        }   
+                                    }else{
+                                        result.dataRows[j][result.dataColumns[i].data]='';
+                                    }
+                                }
+                            }
+                            var dataRows=result.dataRows;
+                            debugger; 
+                            var pleaseWaitString = '<div class="pleaseWaitWrapper">' +
+                                '<img src="/img/loading32.gif" alt="Loading" style="vertical-align: middle;"/>' +
+                                '<br />Please wait...' +
+                                '</div>';
+                            $('#applicationPreferenceTable').html('');
+                            
+                            applicationPreferenceTableData = $('#applicationPreferenceTable').DataTable({
+                                'paging': true,
+                                'pageLength': 10,
+                                'ordering': true,
+                                'info': true,
+                                'processing': true,
+                                'select': true,
+                                
+                                'language': {
+                                    'loadingRecords': pleaseWaitString,
+                                    'processing': pleaseWaitString
+                                },
+                                data: result.dataRows,
+                                columns: result.dataColumns,
+                                
+                            });
+                            applicationPreferenceTableData.select.info( false );
+                            
+                        }, 
+                        {escape: true}
+                    );
+                    Visualforce.remoting.Manager.invokeAction(
+                        '{!$RemoteAction.HOP_ApplicationViewController.getRecords}', 
                         "Flagged_Record_Set__c",
                         "Id,Rule_Name__c, Total_Number_of_Pending_Review__c",
                         "Id IN ({!flaggedRecordSetString})",                        
@@ -852,8 +932,12 @@
                                     if ( result.dataRows[j].hasOwnProperty(result.dataColumns[i].data) ) {
                                         if(result.dataColumns[i].type==='date'){
                                             var dateNumVal=new Date(result.dataRows[j][result.dataColumns[i].data]);
+                                            result.dataRows[j][result.dataColumns[i].data]=moment.utc(dateNumVal).format('M/D/YYYY');
+                                        }
+                                         if(result.dataColumns[i].type==='datetime'){
+                                            var dateNumVal=new Date(result.dataRows[j][result.dataColumns[i].data]);
                                             result.dataRows[j][result.dataColumns[i].data]=moment(dateNumVal).format('M/D/YYYY');
-                                        }   
+                                        }     
                                     }else{
                                         result.dataRows[j][result.dataColumns[i].data]='';
                                     }

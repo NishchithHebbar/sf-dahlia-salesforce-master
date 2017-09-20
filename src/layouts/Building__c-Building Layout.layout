@@ -8,10 +8,6 @@
         <label>Information</label>
         <layoutColumns>
             <layoutItems>
-                <behavior>Readonly</behavior>
-                <field>Name</field>
-            </layoutItems>
-            <layoutItems>
                 <behavior>Edit</behavior>
                 <field>Property_Name__c</field>
             </layoutItems>
@@ -137,6 +133,10 @@
             <layoutItems>
                 <behavior>Edit</behavior>
                 <field>Reserved_community_maximum_age__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>Reserved_Community_Requirement__c</field>
             </layoutItems>
         </layoutColumns>
         <style>TwoColumnsLeftToRight</style>
@@ -523,10 +523,13 @@
     </layoutSections>
     <relatedLists>
         <fields>NAME</fields>
-        <fields>Number_of_Bedrooms__c</fields>
+        <fields>Unit_Type__c</fields>
         <fields>Number_of_Bathrooms__c</fields>
         <fields>Sq_Ft__c</fields>
         <fields>Status__c</fields>
+        <fields>of_AMI_for_Pricing_Unit__c</fields>
+        <fields>AMI_chart_type__c</fields>
+        <fields>AMI_chart_year__c</fields>
         <relatedList>Unit__c.Property__c</relatedList>
     </relatedLists>
     <relatedLists>

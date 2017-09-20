@@ -283,6 +283,10 @@ Renamed again to Application Member from Application Household on 6/16/16 per cl
                     <default>false</default>
                 </value>
                 <value>
+                    <fullName>Genderqueer/Gender Non-binary</fullName>
+                    <default>false</default>
+                </value>
+                <value>
                     <fullName>Trans Male</fullName>
                     <default>false</default>
                 </value>
@@ -574,6 +578,29 @@ Renamed again to Application Member from Application Household on 6/16/16 per cl
         <type>Phone</type>
     </fields>
     <fields>
+        <fullName>Preference_Address_Match__c</fullName>
+        <description>Field to determine if neighborhood address was matched by GIS service.</description>
+        <externalId>false</externalId>
+        <label>NRHP/ADHP Address Match</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Matched</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Not Matched</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
         <fullName>Primary_Language_Other__c</fullName>
         <externalId>false</externalId>
         <label>Primary Language - Other</label>
@@ -771,6 +798,33 @@ Renamed again to Application Member from Application Household on 6/16/16 per cl
         <type>Phone</type>
     </fields>
     <fields>
+        <fullName>Sex_at_Birth__c</fullName>
+        <externalId>false</externalId>
+        <label>Sex at Birth</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Female</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Male</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Decline to Answer</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
         <fullName>Sexual_Orientation_Other__c</fullName>
         <externalId>false</externalId>
         <label>Sexual Orientation - Other</label>
@@ -798,19 +852,15 @@ Renamed again to Application Member from Application Household on 6/16/16 per cl
                     <default>false</default>
                 </value>
                 <value>
-                    <fullName>Gay</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Lesbian</fullName>
-                    <default>false</default>
-                </value>
-                <value>
                     <fullName>Bisexual</fullName>
                     <default>false</default>
                 </value>
                 <value>
                     <fullName>Questioning/Unsure</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Gay/Lesbian/Same-Gender Loving</fullName>
                     <default>false</default>
                 </value>
                 <value>
@@ -820,6 +870,16 @@ Renamed again to Application Member from Application Household on 6/16/16 per cl
                 <value>
                     <fullName>Decline to state</fullName>
                     <default>false</default>
+                </value>
+                <value>
+                    <fullName>Gay</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                </value>
+                <value>
+                    <fullName>Lesbian</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
                 </value>
             </valueSetDefinition>
         </valueSet>
@@ -1010,6 +1070,7 @@ Renamed again to Application Member from Application Household on 6/16/16 per cl
         <columns>Date_of_Birth__c</columns>
         <columns>City__c</columns>
         <columns>Work_in_SF__c</columns>
+        <columns>CREATED_DATE</columns>
         <filterScope>Everything</filterScope>
         <label>All</label>
     </listViews>
@@ -1027,8 +1088,10 @@ Renamed again to Application Member from Application Household on 6/16/16 per cl
     <pluralLabel>Application Members</pluralLabel>
     <searchLayouts>
         <lookupDialogsAdditionalFields>Contact__c</lookupDialogsAdditionalFields>
-        <lookupDialogsAdditionalFields>Phone__c</lookupDialogsAdditionalFields>
-        <lookupDialogsAdditionalFields>Email__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Date_of_Birth__c</lookupDialogsAdditionalFields>
+        <searchResultsAdditionalFields>Application__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>First_Name__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Last_Name__c</searchResultsAdditionalFields>
     </searchLayouts>
     <sharingModel>ControlledByParent</sharingModel>
     <startsWith>Vowel</startsWith>

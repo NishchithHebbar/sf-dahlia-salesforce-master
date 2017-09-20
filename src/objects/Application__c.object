@@ -46,6 +46,7 @@
     <description>Application</description>
     <enableActivities>true</enableActivities>
     <enableBulkApi>true</enableBulkApi>
+    <enableEnhancedLookup>true</enableEnhancedLookup>
     <enableFeeds>false</enableFeeds>
     <enableHistory>true</enableHistory>
     <enableReports>true</enableReports>
@@ -139,6 +140,20 @@
         <type>Currency</type>
     </fields>
     <fields>
+        <fullName>Answered_Community_Screening__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Answered Community Screening</inlineHelpText>
+        <label>Meets Community Requirement</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetName>Boolean_Blank</valueSetName>
+        </valueSet>
+    </fields>
+    <fields>
         <fullName>Applicant_Household__c</fullName>
         <deleteConstraint>SetNull</deleteConstraint>
         <externalId>false</externalId>
@@ -157,7 +172,7 @@
         <description>Primary applicant of the application</description>
         <externalId>false</externalId>
         <inlineHelpText>Select the primary applicant for this application</inlineHelpText>
-        <label>Applicant</label>
+        <label>Primary Application Member Number</label>
         <referenceTo>Application_Member__c</referenceTo>
         <relationshipLabel>Applications (Applicant)</relationshipLabel>
         <relationshipName>Applications4</relationshipName>
@@ -346,7 +361,7 @@
 IF(
   OR(
     AND(NOT(ISBLANK(COP_Preference_Member__c)), ISPICKVAL(COP_Preference_Manual__c, &apos;&apos;)),
-    AND(NOT(ISBLANK(COP_Preference_Member__c)), ISPICKVAL(COP_Preference_Manual__c, &apos;Unconfirmed&apos;)), 
+    AND(NOT(ISBLANK(COP_Preference_Member__c)), ISPICKVAL(COP_Preference_Manual__c, &apos;Unconfirmed&apos;)),
     AND(NOT(ISBLANK(COP_Preference_Member__c)), ISPICKVAL(COP_Preference_Manual__c, &apos;Valid&apos;)),
     ISPICKVAL(COP_Preference_Manual__c, &apos;Valid - Added&apos;)
     ), true, false)</formula>
@@ -468,7 +483,7 @@ IF(
 IF(
   OR(
     AND(NOT(ISBLANK(DTHP_Preference_Member__c)), ISPICKVAL(DTHP_Preference_Manual__c, &apos;&apos;)),
-    AND(NOT(ISBLANK(DTHP_Preference_Member__c)), ISPICKVAL(DTHP_Preference_Manual__c, &apos;Unconfirmed&apos;)), 
+    AND(NOT(ISBLANK(DTHP_Preference_Member__c)), ISPICKVAL(DTHP_Preference_Manual__c, &apos;Unconfirmed&apos;)),
     AND(NOT(ISBLANK(DTHP_Preference_Member__c)), ISPICKVAL(DTHP_Preference_Manual__c, &apos;Valid&apos;)),
     ISPICKVAL(DTHP_Preference_Manual__c, &apos;Valid - Added&apos;)
     ), true, false)</formula>
@@ -529,12 +544,11 @@ IF(
         <fullName>Form_Metadata__c</fullName>
         <externalId>false</externalId>
         <label>Form Metadata</label>
-        <length>255</length>
-        <required>false</required>
+        <length>131072</length>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
-        <type>Text</type>
-        <unique>false</unique>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
     </fields>
     <fields>
         <fullName>Gender__c</fullName>
@@ -568,12 +582,71 @@ IF(ISPICKVAL( Applicant__r.Gender__c, &quot;Decline to State&quot;), &quot;Decli
     <fields>
         <fullName>General_Lottery__c</fullName>
         <externalId>false</externalId>
-        <formula>NOT(OR(DTHP_Preference__c,Live_Work_Preference__c,COP_Preference__c, Neighborhood_Preference__c ))</formula>
+        <formula>/*NOT(OR(DTHP_Preference__c,Live_Work_Preference__c,COP_Preference__c, Neighborhood_Preference__c ))*/
+
+Preferences_Received_Count__c == 0</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <label>General Lottery</label>
+        <label>General Lottery (No Preferences)</label>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Has_ADA_Priorities_Selected__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>ADA Priorities Selected</inlineHelpText>
+        <label>ADA Priorities Selected</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>MultiselectPicklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetName>Priority</valueSetName>
+        </valueSet>
+        <visibleLines>4</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Has_DevelopmentalDisability__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Qualifying Developmentally Disabled</inlineHelpText>
+        <label>Reserved - Developmentally Disabled</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetName>Boolean_Blank</valueSetName>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Has_Military_Service__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Qualifying Served in Military?</inlineHelpText>
+        <label>Reserved - US Military</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetName>Boolean_Blank</valueSetName>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Has_Rent_Burden_HUD__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Qualifying RentBurden HUD?</inlineHelpText>
+        <label>Qualifying Assisted Housing</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetName>Boolean_Blank</valueSetName>
+        </valueSet>
     </fields>
     <fields>
         <fullName>Housing_Voucher_or_Subsidy__c</fullName>
@@ -608,6 +681,15 @@ IF(ISPICKVAL( Applicant__r.Gender__c, &quot;Decline to State&quot;), &quot;Decli
         <formula>IF(ISPICKVAL( Listing__r.Lottery_Status__c, &apos;Lottery Complete&apos;),true,false)</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Is Lottery Complete</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Is_Migrated__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Is Migrated?</label>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
@@ -862,6 +944,16 @@ IF(ISPICKVAL( Applicant__r.Gender__c, &quot;Decline to State&quot;), &quot;Decli
         </valueSet>
     </fields>
     <fields>
+        <fullName>Lottery_Attendance__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <inlineHelpText>If checked, lottery label will be created for applicant</inlineHelpText>
+        <label>Lottery Attendance</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
         <fullName>Lottery_Number_Manual__c</fullName>
         <description>Temporary field to use for uploading temp applications to run through the lottery. This will be used to link Salesforce applications, to those that are sent to the MOHCD from others.</description>
         <externalId>false</externalId>
@@ -1108,7 +1200,7 @@ IF(ISPICKVAL( Applicant__r.Gender__c, &quot;Decline to State&quot;), &quot;Decli
 IF(
   OR(
     AND(NOT(ISBLANK(Neighborhood_Preference_Member__c)), ISPICKVAL(Neighborhood_Preference_Manual__c, &apos;&apos;)),
-    AND(NOT(ISBLANK(Neighborhood_Preference_Member__c)), ISPICKVAL(Neighborhood_Preference_Manual__c, &apos;Unconfirmed&apos;)), 
+    AND(NOT(ISBLANK(Neighborhood_Preference_Member__c)), ISPICKVAL(Neighborhood_Preference_Manual__c, &apos;Unconfirmed&apos;)),
     AND(NOT(ISBLANK(Neighborhood_Preference_Member__c)), ISPICKVAL(Neighborhood_Preference_Manual__c, &apos;Valid Address&apos;)),
     ISPICKVAL(Neighborhood_Preference_Manual__c, &apos;Valid Address - Added&apos;)
     ), true, false)</formula>
@@ -1153,12 +1245,24 @@ IF(
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>Preferences_Received_Count__c</fullName>
+        <externalId>false</externalId>
+        <label>Preferences Received Count</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>Primary_Applicant__c</fullName>
         <deleteConstraint>SetNull</deleteConstraint>
         <description>Primary applicant on the application</description>
         <externalId>false</externalId>
         <inlineHelpText>Select the primary applicant for this application</inlineHelpText>
-        <label>Applicant</label>
+        <label>Primary Applicant Contact</label>
         <lookupFilter>
             <active>false</active>
             <filterItems>
@@ -1187,6 +1291,34 @@ IF(
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Qualifying_RentBurden_HUD__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Qualifying RentBurden HUD?</inlineHelpText>
+        <label>Qualifying RentBurden HUD</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetName>Boolean_Blank</valueSetName>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Qualifying_Served_in_Military__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Qualifying Served in Military?</inlineHelpText>
+        <label>Reserved - U.S. Military</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetName>Boolean_Blank</valueSetName>
+        </valueSet>
     </fields>
     <fields>
         <fullName>Race__c</fullName>
@@ -1225,6 +1357,14 @@ IF(
                 </value>
                 <value>
                     <fullName>Flyer</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Radio Ad</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Bus Ad</fullName>
                     <default>false</default>
                 </value>
                 <value>
@@ -1365,6 +1505,18 @@ IF(
         <type>Summary</type>
     </fields>
     <fields>
+        <fullName>Total_Monthly_Rent__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Total Monthly Rent</inlineHelpText>
+        <label>Total Monthly Rent</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
         <fullName>Work_in_SF_Preference_Member__c</fullName>
         <deleteConstraint>SetNull</deleteConstraint>
         <externalId>false</externalId>
@@ -1463,19 +1615,28 @@ IF(
         <columns>Application_Submitted_Date__c</columns>
         <columns>Application_Submission_Type__c</columns>
         <columns>Applicant__c</columns>
+        <columns>First_Name__c</columns>
+        <columns>Last_Name__c</columns>
         <columns>Email__c</columns>
+        <columns>Date_of_birth__c</columns>
         <columns>Status__c</columns>
-        <columns>DTHP_Preference__c</columns>
+        <columns>Housing_Voucher_or_Subsidy__c</columns>
+        <columns>Annual_Income__c</columns>
+        <columns>Monthly_Income__c</columns>
+        <columns>Total_Household_Size__c</columns>
         <columns>Live_Work_Preference__c</columns>
-        <columns>Neighborhood_Preference__c</columns>
-        <columns>Phone__c</columns>
-        <columns>Second_Phone__c</columns>
         <filterScope>Everything</filterScope>
+        <filters>
+            <field>Status__c</field>
+            <operation>equals</operation>
+            <value>Submitted</value>
+        </filters>
         <label>All</label>
     </listViews>
     <listViews>
         <fullName>All_BMR_Rental_Short_Form_Applications</fullName>
         <columns>NAME</columns>
+        <columns>Application_Submitted_Date__c</columns>
         <columns>COP_Preference_Manual__c</columns>
         <columns>COP_Preference_Member__c</columns>
         <columns>COP_Preference__c</columns>
@@ -1486,7 +1647,7 @@ IF(
         <filters>
             <field>RECORDTYPE</field>
             <operation>equals</operation>
-            <value>Application__c.BMR_Rental_Short_Form</value>
+            <value>Application__c.Rental_Short_Form</value>
         </filters>
         <label>All BMR Rental Short-Form Applications</label>
     </listViews>
@@ -1545,6 +1706,65 @@ IF(
         <label>280 Brighton Removed</label>
     </listViews>
     <listViews>
+        <fullName>All_Submitted_Applications_Multifamily</fullName>
+        <columns>Listing__c</columns>
+        <columns>NAME</columns>
+        <columns>Application_Submitted_Date__c</columns>
+        <columns>Application_Submission_Type__c</columns>
+        <columns>Applicant__c</columns>
+        <columns>Email__c</columns>
+        <columns>First_Name__c</columns>
+        <columns>Last_Name__c</columns>
+        <columns>Date_of_birth__c</columns>
+        <columns>Status__c</columns>
+        <columns>Housing_Voucher_or_Subsidy__c</columns>
+        <columns>Annual_Income__c</columns>
+        <columns>Monthly_Income__c</columns>
+        <columns>Total_Household_Size__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Status__c</field>
+            <operation>equals</operation>
+            <value>Submitted</value>
+        </filters>
+        <label>All Submitted Applications Multifamily</label>
+    </listViews>
+    <listViews>
+        <fullName>All_Submitted_Applications_electronic</fullName>
+        <columns>Listing__c</columns>
+        <columns>NAME</columns>
+        <columns>Application_Submitted_Date__c</columns>
+        <columns>Application_Submission_Type__c</columns>
+        <columns>Applicant__c</columns>
+        <columns>Email__c</columns>
+        <columns>First_Name__c</columns>
+        <columns>Last_Name__c</columns>
+        <columns>Date_of_birth__c</columns>
+        <columns>Status__c</columns>
+        <columns>Housing_Voucher_or_Subsidy__c</columns>
+        <columns>Annual_Income__c</columns>
+        <columns>Monthly_Income__c</columns>
+        <columns>Total_Household_Size__c</columns>
+        <columns>COP_Preference__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Status__c</field>
+            <operation>equals</operation>
+            <value>Submitted</value>
+        </filters>
+        <filters>
+            <field>Application_Submission_Type__c</field>
+            <operation>equals</operation>
+            <value>Electronic</value>
+        </filters>
+        <filters>
+            <field>CREATEDBY_USER</field>
+            <operation>contains</operation>
+            <value>DAHLIA</value>
+        </filters>
+        <label>All Submitted Applications_electronic</label>
+    </listViews>
+    <listViews>
         <fullName>Argenta_909</fullName>
         <columns>Listing__c</columns>
         <columns>NAME</columns>
@@ -1575,6 +1795,71 @@ IF(
         <label>Argenta 909</label>
     </listViews>
     <listViews>
+        <fullName>Brighton_11_16</fullName>
+        <columns>Listing__c</columns>
+        <columns>NAME</columns>
+        <columns>Application_Submitted_Date__c</columns>
+        <columns>Application_Submission_Type__c</columns>
+        <columns>Applicant__c</columns>
+        <columns>Email__c</columns>
+        <columns>First_Name__c</columns>
+        <columns>Last_Name__c</columns>
+        <columns>Date_of_birth__c</columns>
+        <columns>Status__c</columns>
+        <columns>Annual_Income__c</columns>
+        <columns>Monthly_Income__c</columns>
+        <columns>Total_Household_Size__c</columns>
+        <columns>Application_Language__c</columns>
+        <columns>General_Lottery__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Status__c</field>
+            <operation>equals</operation>
+            <value>Submitted</value>
+        </filters>
+        <filters>
+            <field>Listing__c</field>
+            <operation>equals</operation>
+            <value>280 Brighton Avenue</value>
+        </filters>
+        <label>280 Brighton 11/30/16</label>
+    </listViews>
+    <listViews>
+        <fullName>Brighton_11_16_paper</fullName>
+        <columns>Listing__c</columns>
+        <columns>NAME</columns>
+        <columns>Application_Submitted_Date__c</columns>
+        <columns>Application_Submission_Type__c</columns>
+        <columns>Applicant__c</columns>
+        <columns>Email__c</columns>
+        <columns>First_Name__c</columns>
+        <columns>Last_Name__c</columns>
+        <columns>Date_of_birth__c</columns>
+        <columns>Status__c</columns>
+        <columns>Housing_Voucher_or_Subsidy__c</columns>
+        <columns>Annual_Income__c</columns>
+        <columns>Monthly_Income__c</columns>
+        <columns>Total_Household_Size__c</columns>
+        <columns>Application_Language__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Status__c</field>
+            <operation>equals</operation>
+            <value>Submitted</value>
+        </filters>
+        <filters>
+            <field>Listing__c</field>
+            <operation>equals</operation>
+            <value>280 Brighton Avenue</value>
+        </filters>
+        <filters>
+            <field>Application_Submission_Type__c</field>
+            <operation>equals</operation>
+            <value>Paper</value>
+        </filters>
+        <label>280 Brighton 11/30/16 paper</label>
+    </listViews>
+    <listViews>
         <fullName>COP_Confirmed_Applications</fullName>
         <columns>NAME</columns>
         <columns>COP_Preference_Manual__c</columns>
@@ -1601,7 +1886,7 @@ IF(
         <filters>
             <field>RECORDTYPE</field>
             <operation>equals</operation>
-            <value>Application__c.BMR_Rental_Short_Form</value>
+            <value>Application__c.Rental_Short_Form</value>
         </filters>
         <filters>
             <field>COP_Preference_Manual__c</field>
@@ -1614,6 +1899,121 @@ IF(
             <value>Submitted,Removed</value>
         </filters>
         <label>COP Unconfirmed Applications</label>
+    </listViews>
+    <listViews>
+        <fullName>COP_Unconfirmed_Applications1</fullName>
+        <columns>Listing__c</columns>
+        <columns>NAME</columns>
+        <columns>Status__c</columns>
+        <columns>COP_Preference_Manual__c</columns>
+        <columns>COP_Preference_Member__c</columns>
+        <columns>COP_Preference_Member_DOB__c</columns>
+        <columns>COP_Preference_Member_Name__c</columns>
+        <columns>COP_Preference__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>COP_Preference_Manual__c</field>
+            <operation>equals</operation>
+            <value>Unconfirmed</value>
+        </filters>
+        <filters>
+            <field>Status__c</field>
+            <operation>equals</operation>
+            <value>Submitted,Removed</value>
+        </filters>
+        <label>COP Unconfirmed Applications</label>
+    </listViews>
+    <listViews>
+        <fullName>COP_confirmed_Applications1</fullName>
+        <columns>Listing__c</columns>
+        <columns>NAME</columns>
+        <columns>Status__c</columns>
+        <columns>COP_Preference_Manual__c</columns>
+        <columns>COP_Preference_Member__c</columns>
+        <columns>COP_Preference_Member_DOB__c</columns>
+        <columns>COP_Preference_Member_Name__c</columns>
+        <columns>COP_Preference__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>COP_Preference_Manual__c</field>
+            <operation>equals</operation>
+            <value>Unconfirmed</value>
+        </filters>
+        <filters>
+            <field>Status__c</field>
+            <operation>equals</operation>
+            <value>Submitted,Removed</value>
+        </filters>
+        <label>COP confirmed Applications</label>
+    </listViews>
+    <listViews>
+        <fullName>COP_confirmed_Applications2</fullName>
+        <columns>Listing__c</columns>
+        <columns>NAME</columns>
+        <columns>Status__c</columns>
+        <columns>COP_Preference_Manual__c</columns>
+        <columns>COP_Preference_Member__c</columns>
+        <columns>COP_Preference_Member_DOB__c</columns>
+        <columns>COP_Preference_Member_Name__c</columns>
+        <columns>COP_Preference__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>COP_Preference_Manual__c</field>
+            <operation>equals</operation>
+            <value>Unconfirmed,Valid,Valid - Added</value>
+        </filters>
+        <filters>
+            <field>Status__c</field>
+            <operation>equals</operation>
+            <value>Submitted,Removed</value>
+        </filters>
+        <label>COP confirmed Applications</label>
+    </listViews>
+    <listViews>
+        <fullName>COP_confirmed_Applications3</fullName>
+        <columns>COP_Preference_Member_Name__c</columns>
+        <columns>Listing__c</columns>
+        <columns>NAME</columns>
+        <columns>Status__c</columns>
+        <columns>COP_Preference_Manual__c</columns>
+        <columns>COP_Preference_Member__c</columns>
+        <columns>COP_Preference_Member_DOB__c</columns>
+        <columns>COP_Preference__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>COP_Preference_Manual__c</field>
+            <operation>equals</operation>
+            <value>Unconfirmed,Valid,Valid - Added</value>
+        </filters>
+        <filters>
+            <field>Status__c</field>
+            <operation>equals</operation>
+            <value>Submitted,Removed</value>
+        </filters>
+        <label>COP confirmed Applications</label>
+    </listViews>
+    <listViews>
+        <fullName>COP_confirmed_Applications4</fullName>
+        <columns>COP_Preference_Member_Name__c</columns>
+        <columns>Listing__c</columns>
+        <columns>NAME</columns>
+        <columns>Status__c</columns>
+        <columns>COP_Preference_Manual__c</columns>
+        <columns>COP_Preference_Member__c</columns>
+        <columns>COP_Preference_Member_DOB__c</columns>
+        <columns>COP_Preference__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>COP_Preference_Manual__c</field>
+            <operation>equals</operation>
+            <value>Unconfirmed,Valid,Valid - Added</value>
+        </filters>
+        <filters>
+            <field>Status__c</field>
+            <operation>equals</operation>
+            <value>Submitted,Removed</value>
+        </filters>
+        <label>COP confirmed Applications</label>
     </listViews>
     <listViews>
         <fullName>DTHP_Confirmed_Valid_Applications</fullName>
@@ -1715,6 +2115,25 @@ IF(
         <label>Draft_Applications_LSeven</label>
     </listViews>
     <listViews>
+        <fullName>Duboce_Applications</fullName>
+        <columns>Listing__c</columns>
+        <columns>NAME</columns>
+        <columns>Application_Submitted_Date__c</columns>
+        <columns>Primary_Applicant__c</columns>
+        <columns>COP_Preference__c</columns>
+        <columns>DTHP_Preference__c</columns>
+        <columns>Application_Submission_Type__c</columns>
+        <columns>Lottery_Attendance__c</columns>
+        <columns>Neighborhood_Preference__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Listing__c</field>
+            <operation>equals</operation>
+            <value>Duboce</value>
+        </filters>
+        <label>Duboce Applications</label>
+    </listViews>
+    <listViews>
         <fullName>EVIVA_Applications</fullName>
         <columns>Listing__c</columns>
         <columns>NAME</columns>
@@ -1730,6 +2149,35 @@ IF(
             <value>EVIVA</value>
         </filters>
         <label>EVIVA Applications</label>
+    </listViews>
+    <listViews>
+        <fullName>L_Seven_Initial_Lease_Up</fullName>
+        <columns>Listing__c</columns>
+        <columns>NAME</columns>
+        <columns>Application_Submitted_Date__c</columns>
+        <columns>Application_Submission_Type__c</columns>
+        <columns>Email__c</columns>
+        <columns>First_Name__c</columns>
+        <columns>Last_Name__c</columns>
+        <columns>Date_of_birth__c</columns>
+        <columns>Neighborhood_Preference__c</columns>
+        <columns>Neighborhood_Preference_Manual__c</columns>
+        <columns>Neighborhood_Preference_Member__c</columns>
+        <columns>Live_Work_Preference__c</columns>
+        <columns>Status__c</columns>
+        <columns>Residence_Address__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Status__c</field>
+            <operation>equals</operation>
+            <value>Submitted</value>
+        </filters>
+        <filters>
+            <field>Listing__c</field>
+            <operation>contains</operation>
+            <value>Seven</value>
+        </filters>
+        <label>L Seven Initial Lease-Up</label>
     </listViews>
     <listViews>
         <fullName>L_Seven_Initial_Lease_Up_Removed</fullName>
@@ -1831,6 +2279,95 @@ IF(
         <label>L Seven Paper Submissions</label>
     </listViews>
     <listViews>
+        <fullName>Mosso_All_Submitted_Applications</fullName>
+        <columns>Listing__c</columns>
+        <columns>NAME</columns>
+        <columns>Application_Submitted_Date__c</columns>
+        <columns>Application_Submission_Type__c</columns>
+        <columns>Applicant__c</columns>
+        <columns>Email__c</columns>
+        <columns>First_Name__c</columns>
+        <columns>Last_Name__c</columns>
+        <columns>Date_of_birth__c</columns>
+        <columns>Status__c</columns>
+        <columns>Housing_Voucher_or_Subsidy__c</columns>
+        <columns>Annual_Income__c</columns>
+        <columns>Monthly_Income__c</columns>
+        <columns>Total_Household_Size__c</columns>
+        <columns>COP_Preference__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Status__c</field>
+            <operation>equals</operation>
+            <value>Submitted</value>
+        </filters>
+        <filters>
+            <field>Listing__c</field>
+            <operation>contains</operation>
+            <value>Mosso</value>
+        </filters>
+        <label>Mosso All Submitted</label>
+    </listViews>
+    <listViews>
+        <fullName>Mosson_Unit_742_Lottery_5_25_17</fullName>
+        <columns>NAME</columns>
+        <columns>Primary_Applicant__c</columns>
+        <columns>COP_Preference__c</columns>
+        <columns>DTHP_Preference__c</columns>
+        <columns>DTHP_Preference_Member_Name__c</columns>
+        <columns>DTHP_Preference_Member_DOB__c</columns>
+        <columns>COP_Preference_Member_Name__c</columns>
+        <columns>COP_Preference_Member_DOB__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Status__c</field>
+            <operation>notEqual</operation>
+            <value>Draft</value>
+        </filters>
+        <filters>
+            <field>Listing__c</field>
+            <operation>equals</operation>
+            <value>Mosso Unit 742</value>
+        </filters>
+        <label>Mosso Unit 742-Lottery 5/25/17</label>
+    </listViews>
+    <listViews>
+        <fullName>Multifamily_Recruiting</fullName>
+        <booleanFilter>(1 AND 2) OR (3 AND 4)</booleanFilter>
+        <columns>NAME</columns>
+        <columns>First_Name__c</columns>
+        <columns>Last_Name__c</columns>
+        <columns>Email__c</columns>
+        <columns>Phone__c</columns>
+        <columns>Phone_Type__c</columns>
+        <columns>Annual_Income__c</columns>
+        <columns>Monthly_Income__c</columns>
+        <columns>Applicant_Household__c</columns>
+        <columns>Total_Household_Size__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Annual_Income__c</field>
+            <operation>greaterThan</operation>
+            <value>19,416</value>
+        </filters>
+        <filters>
+            <field>Annual_Income__c</field>
+            <operation>lessThan</operation>
+            <value>56,50</value>
+        </filters>
+        <filters>
+            <field>Monthly_Income__c</field>
+            <operation>greaterThan</operation>
+            <value>1618</value>
+        </filters>
+        <filters>
+            <field>Monthly_Income__c</field>
+            <operation>lessThan</operation>
+            <value>4671</value>
+        </filters>
+        <label>Dahlia_Application_Multifamily_Recruitin</label>
+    </listViews>
+    <listViews>
         <fullName>Nema_3_29_2017_Lottery</fullName>
         <columns>NAME</columns>
         <columns>Applicant__c</columns>
@@ -1881,6 +2418,56 @@ IF(
         <label>Nema Units 1208 &amp; 738 Re-Rental</label>
     </listViews>
     <listViews>
+        <fullName>Potrero_1010_Unit_236_Applications</fullName>
+        <columns>NAME</columns>
+        <columns>Primary_Applicant__c</columns>
+        <columns>Status__c</columns>
+        <columns>DTHP_Preference__c</columns>
+        <columns>COP_Preference__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Listing__c</field>
+            <operation>equals</operation>
+            <value>Potrero1010 Unit 236</value>
+        </filters>
+        <label>Potrero 1010 Unit 236 Applications</label>
+    </listViews>
+    <listViews>
+        <fullName>Rincon_Green_paper</fullName>
+        <columns>Listing__c</columns>
+        <columns>NAME</columns>
+        <columns>Application_Submitted_Date__c</columns>
+        <columns>Application_Submission_Type__c</columns>
+        <columns>Status__c</columns>
+        <columns>Email__c</columns>
+        <columns>First_Name__c</columns>
+        <columns>Last_Name__c</columns>
+        <columns>Date_of_birth__c</columns>
+        <columns>Housing_Voucher_or_Subsidy__c</columns>
+        <columns>Annual_Income__c</columns>
+        <columns>COP_Preference__c</columns>
+        <columns>Neighborhood_Preference__c</columns>
+        <columns>Live_Work_Preference__c</columns>
+        <columns>Application_Language__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Status__c</field>
+            <operation>equals</operation>
+            <value>Submitted</value>
+        </filters>
+        <filters>
+            <field>Listing__c</field>
+            <operation>contains</operation>
+            <value>rincon green</value>
+        </filters>
+        <filters>
+            <field>Application_Submission_Type__c</field>
+            <operation>equals</operation>
+            <value>Paper</value>
+        </filters>
+        <label>Rincon_Green_paper</label>
+    </listViews>
+    <listViews>
         <fullName>Test_Applications</fullName>
         <columns>NAME</columns>
         <columns>Applicant__c</columns>
@@ -1899,6 +2486,145 @@ IF(
         <label>Test Applications</label>
     </listViews>
     <listViews>
+        <fullName>The_Civic_Unit_303_COP</fullName>
+        <columns>NAME</columns>
+        <columns>Primary_Applicant__c</columns>
+        <columns>COP_Preference__c</columns>
+        <columns>COP_Preference_Member_Name__c</columns>
+        <columns>COP_Preference_Member_DOB__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Listing__c</field>
+            <operation>equals</operation>
+            <value>The Civic Unit 303</value>
+        </filters>
+        <filters>
+            <field>Status__c</field>
+            <operation>notEqual</operation>
+            <value>Draft</value>
+        </filters>
+        <label>The Civic Unit 303 COP</label>
+    </listViews>
+    <listViews>
+        <fullName>Trinity_Phase_3_Applications</fullName>
+        <columns>NAME</columns>
+        <columns>Application_Submitted_Date__c</columns>
+        <columns>Primary_Applicant__c</columns>
+        <columns>COP_Preference__c</columns>
+        <columns>DTHP_Preference__c</columns>
+        <columns>Lottery_Rank__c</columns>
+        <columns>Neighborhood_Preference__c</columns>
+        <columns>Neighborhood_Preference_Address__c</columns>
+        <columns>Neighborhood_Preference_Manual__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Listing__c</field>
+            <operation>equals</operation>
+            <value>Trinity Phase 3</value>
+        </filters>
+        <label>Trinity Phase 3 Applications</label>
+    </listViews>
+    <listViews>
+        <fullName>Trinity_Phase_3_Lottery_Re_run_Apps</fullName>
+        <columns>NAME</columns>
+        <columns>L_Applicant_Full_Name__c</columns>
+        <columns>Listing__c</columns>
+        <columns>Lottery_Rank__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Listing__c</field>
+            <operation>equals</operation>
+            <value>Trinity Phase 3 Re-run Lottery 6-5-2017</value>
+        </filters>
+        <label>Trinity Phase 3 Lottery Re-run Apps</label>
+    </listViews>
+    <listViews>
+        <fullName>X1353_1357_Folsom_COP</fullName>
+        <columns>NAME</columns>
+        <columns>Primary_Applicant__c</columns>
+        <columns>COP_Preference__c</columns>
+        <columns>COP_Preference_Member_Name__c</columns>
+        <columns>COP_Preference_Member_DOB__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Listing__c</field>
+            <operation>equals</operation>
+            <value>1353-1357 Folsom Street</value>
+        </filters>
+        <filters>
+            <field>Status__c</field>
+            <operation>notEqual</operation>
+            <value>Draft</value>
+        </filters>
+        <label>1353 -1357 Folsom COP</label>
+    </listViews>
+    <listViews>
+        <fullName>X1353_1357_Folsom_COP1</fullName>
+        <columns>NAME</columns>
+        <columns>Primary_Applicant__c</columns>
+        <columns>COP_Preference__c</columns>
+        <columns>COP_Preference_Member_Name__c</columns>
+        <columns>COP_Preference_Member_DOB__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Listing__c</field>
+            <operation>equals</operation>
+            <value>1353-1357 Folsom Street</value>
+        </filters>
+        <filters>
+            <field>Status__c</field>
+            <operation>notEqual</operation>
+            <value>Draft</value>
+        </filters>
+        <label>1353 -1357 Folsom COP</label>
+    </listViews>
+    <listViews>
+        <fullName>X1400_Mission_Unit_1504_and_1507</fullName>
+        <columns>NAME</columns>
+        <columns>Primary_Applicant__c</columns>
+        <columns>COP_Preference__c</columns>
+        <columns>COP_Preference_Member_Name__c</columns>
+        <columns>COP_Preference_Member_DOB__c</columns>
+        <columns>DTHP_Preference__c</columns>
+        <columns>DTHP_Preference_Member_Name__c</columns>
+        <columns>DTHP_Preference_Member_DOB__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Status__c</field>
+            <operation>notEqual</operation>
+            <value>Draft</value>
+        </filters>
+        <filters>
+            <field>Listing__c</field>
+            <operation>equals</operation>
+            <value>1400 Mission Unit 1504 and 1507</value>
+        </filters>
+        <label>1400 Mission Unit 1504 and 1507</label>
+    </listViews>
+    <listViews>
+        <fullName>X149_151_Duboce_Unit_1_Lottery_5_26_17</fullName>
+        <columns>NAME</columns>
+        <columns>Primary_Applicant__c</columns>
+        <columns>COP_Preference__c</columns>
+        <columns>COP_Preference_Member_DOB__c</columns>
+        <columns>COP_Preference_Member_Name__c</columns>
+        <columns>DTHP_Preference__c</columns>
+        <columns>DTHP_Preference_Member_DOB__c</columns>
+        <columns>DTHP_Preference_Member_Name__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Status__c</field>
+            <operation>notEqual</operation>
+            <value>Draft</value>
+        </filters>
+        <filters>
+            <field>Listing__c</field>
+            <operation>equals</operation>
+            <value>149-151 Duboce Unit 1</value>
+        </filters>
+        <label>149 - 151 Duboce Unit 1 Lottery 5-26-17</label>
+    </listViews>
+    <listViews>
         <fullName>X1_Polk_Submitted_Applications</fullName>
         <columns>Listing__c</columns>
         <columns>NAME</columns>
@@ -1915,6 +2641,166 @@ IF(
             <value>Argenta Unit 909 Re-Rental</value>
         </filters>
         <label>1 Polk Submitted Applications</label>
+    </listViews>
+    <listViews>
+        <fullName>X280_Brighton_11_30_16_NRHP</fullName>
+        <columns>Listing__c</columns>
+        <columns>NAME</columns>
+        <columns>Application_Submitted_Date__c</columns>
+        <columns>Application_Submission_Type__c</columns>
+        <columns>Applicant__c</columns>
+        <columns>Email__c</columns>
+        <columns>First_Name__c</columns>
+        <columns>Last_Name__c</columns>
+        <columns>Date_of_birth__c</columns>
+        <columns>Status__c</columns>
+        <columns>Housing_Voucher_or_Subsidy__c</columns>
+        <columns>Annual_Income__c</columns>
+        <columns>Monthly_Income__c</columns>
+        <columns>Total_Household_Size__c</columns>
+        <columns>Application_Language__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Status__c</field>
+            <operation>equals</operation>
+            <value>Submitted</value>
+        </filters>
+        <filters>
+            <field>Listing__c</field>
+            <operation>equals</operation>
+            <value>280 Brighton Avenue</value>
+        </filters>
+        <filters>
+            <field>Neighborhood_Preference__c</field>
+            <operation>equals</operation>
+            <value>1</value>
+        </filters>
+        <label>280 Brighton 11/30/16 NRHP</label>
+    </listViews>
+    <listViews>
+        <fullName>X280_Brighton_12_19_2016_COP</fullName>
+        <columns>Listing__c</columns>
+        <columns>NAME</columns>
+        <columns>Application_Submitted_Date__c</columns>
+        <columns>Application_Submission_Type__c</columns>
+        <columns>Applicant__c</columns>
+        <columns>Email__c</columns>
+        <columns>First_Name__c</columns>
+        <columns>Last_Name__c</columns>
+        <columns>Date_of_birth__c</columns>
+        <columns>Status__c</columns>
+        <columns>Housing_Voucher_or_Subsidy__c</columns>
+        <columns>Annual_Income__c</columns>
+        <columns>Monthly_Income__c</columns>
+        <columns>Total_Household_Size__c</columns>
+        <columns>Application_Language__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Listing__c</field>
+            <operation>equals</operation>
+            <value>280 Brighton Avenue</value>
+        </filters>
+        <filters>
+            <field>COP_Preference__c</field>
+            <operation>equals</operation>
+            <value>1</value>
+        </filters>
+        <filters>
+            <field>Status__c</field>
+            <operation>equals</operation>
+            <value>Submitted</value>
+        </filters>
+        <label>280 Brighton 12/19/2016 COP</label>
+    </listViews>
+    <listViews>
+        <fullName>X280_Brighton_12_19_2016_Live_Work</fullName>
+        <columns>Listing__c</columns>
+        <columns>NAME</columns>
+        <columns>Application_Submitted_Date__c</columns>
+        <columns>Application_Submission_Type__c</columns>
+        <columns>Applicant__c</columns>
+        <columns>Email__c</columns>
+        <columns>First_Name__c</columns>
+        <columns>Last_Name__c</columns>
+        <columns>Date_of_birth__c</columns>
+        <columns>Status__c</columns>
+        <columns>Housing_Voucher_or_Subsidy__c</columns>
+        <columns>Annual_Income__c</columns>
+        <columns>Monthly_Income__c</columns>
+        <columns>Total_Household_Size__c</columns>
+        <columns>Application_Language__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Status__c</field>
+            <operation>equals</operation>
+            <value>Submitted</value>
+        </filters>
+        <filters>
+            <field>Listing__c</field>
+            <operation>equals</operation>
+            <value>280 Brighton Avenue</value>
+        </filters>
+        <filters>
+            <field>Live_Work_Preference__c</field>
+            <operation>equals</operation>
+            <value>1</value>
+        </filters>
+        <label>280 Brighton 12/19/2016 Live/Work</label>
+    </listViews>
+    <listViews>
+        <fullName>X280_Brighton_12_19_2016_Live_Work1</fullName>
+        <columns>Listing__c</columns>
+        <columns>NAME</columns>
+        <columns>Application_Submitted_Date__c</columns>
+        <columns>Application_Submission_Type__c</columns>
+        <columns>Applicant__c</columns>
+        <columns>Email__c</columns>
+        <columns>First_Name__c</columns>
+        <columns>Last_Name__c</columns>
+        <columns>Date_of_birth__c</columns>
+        <columns>Status__c</columns>
+        <columns>Housing_Voucher_or_Subsidy__c</columns>
+        <columns>Annual_Income__c</columns>
+        <columns>Monthly_Income__c</columns>
+        <columns>Total_Household_Size__c</columns>
+        <columns>Application_Language__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Status__c</field>
+            <operation>equals</operation>
+            <value>Submitted</value>
+        </filters>
+        <filters>
+            <field>Listing__c</field>
+            <operation>equals</operation>
+            <value>280 Brighton Avenue</value>
+        </filters>
+        <filters>
+            <field>Live_Work_Preference__c</field>
+            <operation>equals</operation>
+            <value>1</value>
+        </filters>
+        <label>280 Brighton 12/19/2016 Live/Work</label>
+    </listViews>
+    <listViews>
+        <fullName>X308_Turk_Unit_15_Lottery_5_9_17</fullName>
+        <columns>NAME</columns>
+        <columns>Applicant__c</columns>
+        <columns>Application_Submitted_Date__c</columns>
+        <columns>COP_Preference__c</columns>
+        <columns>DTHP_Preference__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Listing__c</field>
+            <operation>equals</operation>
+            <value>308 Turk Unit 15</value>
+        </filters>
+        <filters>
+            <field>Status__c</field>
+            <operation>equals</operation>
+            <value>Submitted</value>
+        </filters>
+        <label>308 Turk Unit 15 Lottery 5-9-17</label>
     </listViews>
     <listViews>
         <fullName>X855_Brannan_All_Apps</fullName>
@@ -1947,6 +2833,48 @@ IF(
         <label>855 Brannan All Apps</label>
     </listViews>
     <listViews>
+        <fullName>X855_Brannan_All_Apps_LW</fullName>
+        <columns>Listing__c</columns>
+        <columns>NAME</columns>
+        <columns>Application_Submitted_Date__c</columns>
+        <columns>Application_Submission_Type__c</columns>
+        <columns>Applicant__c</columns>
+        <columns>First_Name__c</columns>
+        <columns>Last_Name__c</columns>
+        <columns>Date_of_birth__c</columns>
+        <columns>Status__c</columns>
+        <columns>Neighborhood_Preference__c</columns>
+        <columns>Live_Work_Preference__c</columns>
+        <columns>Live_Work_Opt_Out__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Status__c</field>
+            <operation>equals</operation>
+            <value>Submitted</value>
+        </filters>
+        <filters>
+            <field>Listing__c</field>
+            <operation>contains</operation>
+            <value>855 Brannan</value>
+        </filters>
+        <filters>
+            <field>Live_Work_Preference__c</field>
+            <operation>equals</operation>
+            <value>0</value>
+        </filters>
+        <filters>
+            <field>Application_Submission_Type__c</field>
+            <operation>equals</operation>
+            <value>Electronic</value>
+        </filters>
+        <filters>
+            <field>Residence_Address__c</field>
+            <operation>contains</operation>
+            <value>San Francisco</value>
+        </filters>
+        <label>855 Brannan All Apps_LW</label>
+    </listViews>
+    <listViews>
         <fullName>all280_Fell_Initial_Lease_Up</fullName>
         <columns>Listing__c</columns>
         <columns>NAME</columns>
@@ -1969,8 +2897,8 @@ IF(
         </filters>
         <filters>
             <field>Listing__c</field>
-            <operation>equals</operation>
-            <value>280 Fell Street Apartments</value>
+            <operation>contains</operation>
+            <value>280 Fell</value>
         </filters>
         <label>280 Fell Initial Lease-Up</label>
     </listViews>
@@ -2011,10 +2939,10 @@ IF(
     <pluralLabel>Applications</pluralLabel>
     <recordTypeTrackHistory>false</recordTypeTrackHistory>
     <recordTypes>
-        <fullName>BMR_Rental_Long_Form</fullName>
+        <fullName>Rental_Short_Form</fullName>
         <active>true</active>
-        <description>BMR Rental Long Form Application</description>
-        <label>BMR Rental Long-Form</label>
+        <description>Rental Short Form Application</description>
+        <label>Rental Short Form</label>
         <picklistValues>
             <picklist>Application_Language__c</picklist>
             <values>
@@ -2023,7 +2951,7 @@ IF(
             </values>
             <values>
                 <fullName>English</fullName>
-                <default>false</default>
+                <default>true</default>
             </values>
             <values>
                 <fullName>Filipino</fullName>
@@ -2046,328 +2974,17 @@ IF(
             </values>
         </picklistValues>
         <picklistValues>
-            <picklist>COP_Preference_Manual__c</picklist>
-            <values>
-                <fullName>Invalid</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Unconfirmed</fullName>
-                <default>true</default>
-            </values>
-            <values>
-                <fullName>Valid</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Valid - Added</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>DTHP_Preference_Manual__c</picklist>
-            <values>
-                <fullName>Invalid</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Unconfirmed</fullName>
-                <default>true</default>
-            </values>
-            <values>
-                <fullName>Valid</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Valid - Added</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>Housing_Voucher_or_Subsidy__c</picklist>
+            <picklist>Boolean_Blank</picklist>
             <values>
                 <fullName>Left Blank</fullName>
                 <default>false</default>
             </values>
             <values>
-                <fullName>false</fullName>
+                <fullName>No</fullName>
                 <default>false</default>
             </values>
             <values>
-                <fullName>true</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>Live_in_SF_Preference_Proof__c</picklist>
-            <values>
-                <fullName>Cable and internet bill</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Electric bill</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Garbage bill</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Gas bill</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Letter from employer</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Paystub</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Paystub with employer address</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Public benefits record</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>School record</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Telephone bill</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Third-Party Proof of SF Homelessness</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Water bill</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>Lottery_Status__c</picklist>
-            <values>
-                <fullName>Awaiting Lottery</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Non-Winner</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Winner</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>Neighborhood_Preference_Manual__c</picklist>
-            <values>
-                <fullName>Invalid Address</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Unconfirmed</fullName>
-                <default>true</default>
-            </values>
-            <values>
-                <fullName>Valid Address</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Valid Address - Added</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>Neighborhood_Preference_Proof__c</picklist>
-            <values>
-                <fullName>Cable and internet bill</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Electric bill</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Garbage bill</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Gas bill</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Letter from employer</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Paystub</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Paystub with employer address</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Public benefits record</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>School record</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Telephone bill</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Third-Party Proof of SF Homelessness</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Water bill</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>Referral_Source__c</picklist>
-            <values>
-                <fullName>Developer Website</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Email Alert</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Flyer</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Friend</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Housing Counselor</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>MOHCD Website</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Newspaper</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Other</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>Status__c</picklist>
-            <values>
-                <fullName>Draft</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Removed</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Submitted</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>Work_in_SF_Preference_Proof__c</picklist>
-            <values>
-                <fullName>Cable and internet bill</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Electric bill</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Garbage bill</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Gas bill</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Letter from employer</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Paystub</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Paystub with employer address</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Public benefits record</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>School record</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Telephone bill</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Third-Party Proof of SF Homelessness</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Water bill</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-    </recordTypes>
-    <recordTypes>
-        <fullName>BMR_Rental_Short_Form</fullName>
-        <active>true</active>
-        <description>BMR Rental Short Form Application</description>
-        <label>BMR Rental Short-Form</label>
-        <picklistValues>
-            <picklist>Application_Language__c</picklist>
-            <values>
-                <fullName>Chinese</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>English</fullName>
-                <default>true</default>
-            </values>
-            <values>
-                <fullName>Filipino</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Spanish</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>Application_Submission_Type__c</picklist>
-            <values>
-                <fullName>Electronic</fullName>
-                <default>true</default>
-            </values>
-            <values>
-                <fullName>Paper</fullName>
+                <fullName>Yes</fullName>
                 <default>false</default>
             </values>
         </picklistValues>
@@ -2563,6 +3180,10 @@ IF(
         <picklistValues>
             <picklist>Referral_Source__c</picklist>
             <values>
+                <fullName>Bus Ad</fullName>
+                <default>false</default>
+            </values>
+            <values>
                 <fullName>Developer Website</fullName>
                 <default>false</default>
             </values>
@@ -2594,330 +3215,8 @@ IF(
                 <fullName>Other</fullName>
                 <default>false</default>
             </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>Status__c</picklist>
             <values>
-                <fullName>Draft</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Removed</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Submitted</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>Work_in_SF_Preference_Proof__c</picklist>
-            <values>
-                <fullName>Cable and internet bill</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Electric bill</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Garbage bill</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Gas bill</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Letter from employer</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Paystub</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Paystub with employer address</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Public benefits record</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>School record</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Telephone bill</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Third-Party Proof of SF Homelessness</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Water bill</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-    </recordTypes>
-    <recordTypes>
-        <fullName>Multi_Family_Rental_Short_Form</fullName>
-        <active>true</active>
-        <description>Multi-Family Rental Short Form Application</description>
-        <label>Multi-Family Rental Short-Form</label>
-        <picklistValues>
-            <picklist>Application_Language__c</picklist>
-            <values>
-                <fullName>Chinese</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>English</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Filipino</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Spanish</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>Application_Submission_Type__c</picklist>
-            <values>
-                <fullName>Electronic</fullName>
-                <default>true</default>
-            </values>
-            <values>
-                <fullName>Paper</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>COP_Preference_Manual__c</picklist>
-            <values>
-                <fullName>Invalid</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Unconfirmed</fullName>
-                <default>true</default>
-            </values>
-            <values>
-                <fullName>Valid</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Valid - Added</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>DTHP_Preference_Manual__c</picklist>
-            <values>
-                <fullName>Invalid</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Unconfirmed</fullName>
-                <default>true</default>
-            </values>
-            <values>
-                <fullName>Valid</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Valid - Added</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>Housing_Voucher_or_Subsidy__c</picklist>
-            <values>
-                <fullName>Left Blank</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>false</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>true</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>Live_in_SF_Preference_Proof__c</picklist>
-            <values>
-                <fullName>Cable and internet bill</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Electric bill</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Garbage bill</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Gas bill</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Letter from employer</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Paystub</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Paystub with employer address</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Public benefits record</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>School record</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Telephone bill</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Third-Party Proof of SF Homelessness</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Water bill</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>Lottery_Status__c</picklist>
-            <values>
-                <fullName>Awaiting Lottery</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Non-Winner</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Winner</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>Neighborhood_Preference_Manual__c</picklist>
-            <values>
-                <fullName>Invalid Address</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Unconfirmed</fullName>
-                <default>true</default>
-            </values>
-            <values>
-                <fullName>Valid Address</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Valid Address - Added</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>Neighborhood_Preference_Proof__c</picklist>
-            <values>
-                <fullName>Cable and internet bill</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Electric bill</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Garbage bill</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Gas bill</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Letter from employer</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Paystub</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Paystub with employer address</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Public benefits record</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>School record</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Telephone bill</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Third-Party Proof of SF Homelessness</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Water bill</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>Referral_Source__c</picklist>
-            <values>
-                <fullName>Developer Website</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Email Alert</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Flyer</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Friend</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Housing Counselor</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>MOHCD Website</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Newspaper</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Other</fullName>
+                <fullName>Radio Ad</fullName>
                 <default>false</default>
             </values>
         </picklistValues>
@@ -2990,6 +3289,7 @@ IF(
     </recordTypes>
     <searchLayouts>
         <customTabListAdditionalFields>Application_Submitted_Date__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Application_Submission_Type__c</customTabListAdditionalFields>
         <customTabListAdditionalFields>DTHP_Preference_Manual__c</customTabListAdditionalFields>
         <customTabListAdditionalFields>COP_Preference_Manual__c</customTabListAdditionalFields>
         <lookupDialogsAdditionalFields>Primary_Applicant__c</lookupDialogsAdditionalFields>
@@ -3015,9 +3315,9 @@ IF(
         <description>No Edit When In Draft Status</description>
         <errorConditionFormula>AND(
    $Profile.Name = &quot;MOHCD - Staff&quot; || $Profile.Name = &quot;MOHCD - Leasing Agent&quot; || $Profile.Name = &quot;MOHCD - Leasing Agent Clerk&quot; || $Profile.Name = &quot;MOHCD - Lender&quot; || $Profile.Name = &quot;MOHCD - Property Agent&quot;,
-   ISPICKVAL(Status__c, &quot;draft&quot;) 
+   ISPICKVAL(Status__c, &quot;draft&quot;)
 )</errorConditionFormula>
-        <errorMessage>You do NOT have the ability to Edit this record when it is in &quot;Draft&quot; status. 
+        <errorMessage>You do NOT have the ability to Edit this record when it is in &quot;Draft&quot; status.
 Click Cancel to return to View mode.</errorMessage>
     </validationRules>
 </CustomObject>
